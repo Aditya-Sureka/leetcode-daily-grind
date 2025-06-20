@@ -1,36 +1,36 @@
 class Solution {
-    //a, b are main direction else direction enemy
-    private int solve(char a, char b, String s, int k) {
-        int dist = 0, mx = 0;
+    private void compute(int dir1, int dir2, int dir3, int dir4, int[] k_cnt, int[] dist) {
+        dist[dir1] += (k_cnt[dir1] > 0) ? 1 : -1;
+        k_cnt[dir1]--;
+
+        dist[dir2] += (k_cnt[dir2] > 0) ? 1 : -1;
+        k_cnt[dir2]--;
+
+        dist[dir3]++;
+        dist[dir4]++;
+    }
+    
+     public int maxDistance(String s, int k) {    
+        if(s.length() == k) return k;
+
+        int mx = 0;
+        int[] k_cnt = new int[4];
+        int[] dist = new int[4];
+        Arrays.fill(k_cnt, k);
 
         for(int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
-            if(ch == a || ch == b) {
-                dist++;
+            if(ch == 'N') {
+                compute(1, 3, 0, 2, k_cnt, dist);
+            } else if(ch == 'E'){
+                compute(2, 3, 1, 0, k_cnt, dist);
+            } else if(ch == 'W') {
+                compute(0, 1, 2, 3, k_cnt, dist);
             } else {
-                if(k > 0) {
-                    k--;
-                    dist++;
-                } else {
-                    mx = Math.max(mx, dist);
-                    dist--;
-                }
+                compute(0, 2, 1, 3, k_cnt, dist);
             }
+            mx = Math.max(mx, Math.max(Math.max(dist[0], dist[1]), Math.max(dist[2], dist[3])));
         }
-        mx = Math.max(mx, dist);
         return mx;
-    }
-    
-    public int maxDistance(String s, int k) {
-        if(k == s.length()) return k;
-
-        //good direction
-        int nw = solve('N','W',s, k);
-        int ne = solve('N','E', s, k);
-        int sw = solve('S','W', s, k);
-        int se = solve('S', 'E',s, k);
-
-        return Math.max(Math.max(nw, ne), Math.max(sw, se));
-        
     }
 }
