@@ -1,20 +1,21 @@
 class Solution {
     public String[] divideString(String s, int k, char fill) {
-        List<String> res = new ArrayList<>(); // grouped string
-        int n = s.length();
-        int curr = 0; // starting index of each grp
-        // split string
-        while(curr < n) {
-            int end = Math.min(curr + k, n);
-            res.add(s.substring(curr, end));
-            curr += k;
+        List<String> ans = new ArrayList<>(); // grouped string
+
+        // Pad the string with the fill character until its length is divisible by k
+        while(s.length() % k != 0) {
+            s += fill;
         }
-        // try to fill in last grp
-        String last = res.get(res.size() - 1);
-        if(last.length()< k) {
-            last += String.valueOf(fill).repeat(k - last.length());
-            res.set(res.size()-1, last);
+        // Split the string into k-length parts
+        StringBuilder cur = new StringBuilder();
+        for(int i = 0; i < s.length(); i++) {
+            cur.append(s.charAt(i));
+            if(cur.length() == k) {
+                ans.add(cur.toString());
+                cur = new StringBuilder(); // reset for next grp
+            }
         }
-        return res.toArray(new String[0]);
+        // Convert list to array and return 
+        return ans.toArray(new String[0]);
     }
 }
