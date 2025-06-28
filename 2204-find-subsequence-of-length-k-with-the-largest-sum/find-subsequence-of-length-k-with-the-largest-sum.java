@@ -1,25 +1,28 @@
 class Solution {
     public int[] maxSubsequence(int[] nums, int k) {
-        List<int[]> vp = new ArrayList<>();
+        PriorityQueue<Integer> pq = new PriorityQueue<>(
+            (a, b) -> Integer.compare(nums[a], nums[b]) // Min-heap based on value at index
+        );
 
         for (int i = 0; i < nums.length; i++) {
-            vp.add(new int[]{nums[i], i}); 
+            if (pq.size() < k) {
+                pq.offer(i);
+            } else if (nums[pq.peek()] < nums[i]) {
+                pq.poll();
+                pq.offer(i);
+            }
         }
 
-        // Sort by value (ascending)
-        vp.sort(Comparator.comparingInt(a -> a[0]));
-
-        List<int[]> tmp = new ArrayList<>();
-        for (int i = vp.size() - 1; i >= 0 && k > 0; i--, k--) {
-            tmp.add(new int[]{vp.get(i)[1], vp.get(i)[0]}); // store (index, value)
+        List<Integer> indices = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            indices.add(pq.poll());
         }
 
-        // Sort by original index to maintain original order
-        tmp.sort(Comparator.comparingInt(a -> a[0]));
+        Collections.sort(indices); // Maintain original order
 
-        int[] ans = new int[tmp.size()];
-        for (int i = 0; i < tmp.size(); i++) {
-            ans[i] = tmp.get(i)[1];
+        int[] ans = new int[k];
+        for (int i = 0; i < k; i++) {
+            ans[i] = nums[indices.get(i)];
         }
 
         return ans;
