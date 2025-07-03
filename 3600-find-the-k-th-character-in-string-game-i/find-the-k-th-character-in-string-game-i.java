@@ -1,15 +1,15 @@
 class Solution {
     public char kthCharacter(int k) {
-        int ans = 0;
-        int t;
-        while(k != 1) {
-            t = 31 - Integer.numberOfLeadingZeros(k);
-            if((1 << t) == k) {
-                t--;
-            } 
-            k = k - (1 << t);
-            ans++;
-        }    
-        return (char)('a' + ans);
+        List<Integer> word = new ArrayList<>();
+        word.add(0);
+
+        while(word.size() < k) {
+            int m = word.size();
+
+            for(int i = 0; i < m; i++) {
+                word.add((word.get(i) + 1) % 26);
+            }
+        }
+        return (char)('a' + word.get(k - 1));
     }
 }
