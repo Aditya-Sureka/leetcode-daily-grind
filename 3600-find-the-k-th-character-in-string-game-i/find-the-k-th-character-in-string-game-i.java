@@ -1,15 +1,17 @@
 class Solution {
     public char kthCharacter(int k) {
-        List<Integer> word = new ArrayList<>();
-        word.add(0);
+        StringBuilder word = new StringBuilder("a");
 
-        while(word.size() < k) {
-            int m = word.size();
+        while(word.length() < k) {
+            int len = word.length();
 
-            for(int i = 0; i < m; i++) {
-                word.add((word.get(i) + 1) % 26);
+            for(int i = 0; i < len; i++) {
+                char ch = word.charAt(i);
+
+                char next = (char)((ch - 'a' + 1) % 26 + 'a');
+                word.append(next);
             }
         }
-        return (char)('a' + word.get(k - 1));
+        return word.charAt(k - 1);
     }
 }
