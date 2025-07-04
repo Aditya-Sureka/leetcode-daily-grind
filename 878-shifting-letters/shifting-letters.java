@@ -1,17 +1,11 @@
 class Solution {
     public String shiftingLetters(String s, int[] shifts) {
-        StringBuilder ans = new StringBuilder();
-        int X = 0;
-        for(int shift : shifts) 
-            X = (X + shift) % 26;
-
-            for(int i = 0; i < s.length(); i++) {
-                int idx = s.charAt(i) - 'a';
-                ans.append((char) ((idx + X) % 26 + 97));
-                X = Math.floorMod(X - shifts[i], 26);
-            }
-
+        StringBuilder ans = new StringBuilder(s);
+        long shift=0;
+        for (int i = s.length()-1; i >=0 ; i--){
+            ans.setCharAt(i, (char)((s.charAt(i) - 'a' + (shift+shifts[i]) % 26) % 26 + 'a'));
+            shift+=shifts[i];
+        }
         return ans.toString();
-        
     }
 }
