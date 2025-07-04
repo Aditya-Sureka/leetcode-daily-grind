@@ -1,19 +1,22 @@
 class Solution {
     public int compress(char[] chars) {
-        int i = 0, res = 0;
-        while(i < chars.length) {
-            int groupLength = 1;
-            while(i + groupLength < chars.length && chars[i + groupLength] == chars[i]) {
-                groupLength++;
-            } 
-            chars[res++] = chars[i];
-            if(groupLength > 1) {
-                for(char c : Integer.toString(groupLength).toCharArray()) {
-                    chars[res++] = c;
+        int ans = 0; // keep track of curr pos in compre arr
+        for(int i = 0; i < chars.length; ) {
+            final char letter = chars[i];
+            int count = 0;
+
+            while(i < chars.length && chars[i] == letter) {
+                ++count;
+                ++i;
+            }
+            chars[ans++] = letter;
+
+            if(count > 1) {
+                for(final char c : String.valueOf(count).toCharArray()) {
+                    chars[ans++] = c;
                 }
             }
-            i += groupLength;
         }
-        return res;
+        return ans;
     }
 }
