@@ -1,26 +1,26 @@
 class Solution {
     public char kthCharacter(long k, int[] operations) {
-        int shift = 0; // total number of + 1(mod 26) opr
-        List<Long> lengths = new ArrayList<>();
-        long len = 1;
+        long jump = 0, num = k;
 
-        for(int op : operations) {
-            len *= 2;
-            lengths.add(len);
-            if(len >= k) break;
-        }        
+        while (num > 1) {
+            int lo_range = (int)(Math.log(num) / Math.log(2));
+            int hi_range = lo_range + 1;
 
-        for(int i = lengths.size() - 1; i >= 0; i--) {
-            long half = lengths.get(i) / 2;
-            int op = operations[i];
+            long border = 1L << lo_range;
 
-            if(k > half) {
-                k-= half;
-                if(op == 1) shift++;
+            if (border == num) {
+                lo_range--;
+                border = 1L << lo_range;
             }
-            // else: k remains same
+
+            int ind = lo_range;  // or hi_range - 1
+            num -= border;
+
+            if (operations[ind] == 1) {
+                jump++;
+            }
         }
-        //Apply total shift from 'a'
-        return (char)((('a' - 'a' + shift) % 26) + 'a');
+
+        return (char)('a' + (int)(jump % 26));
     }
 }
