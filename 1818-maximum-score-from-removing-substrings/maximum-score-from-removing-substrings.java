@@ -1,57 +1,56 @@
 class Solution {
+    private int calc(String tmp, int x, int y){
+        int res = 0;
 
-    public int maximumGain(String s, int x, int y) {
-        int totalScore = 0;
-        String highPriorityPair = x > y ? "ab" : "ba";
-        String lowPriorityPair = highPriorityPair.equals("ab") ? "ba" : "ab";
+        if(x >= y){
+            int b = 0, a = 0;
+            // try for all ab pair
+            for(int i = 0; i < tmp.length(); i++){
+                if(tmp.charAt(i) == 'b'){
+                    if(a > 0){ a--; res += x; }
+                    else{ b++; }
+                }
+                else{ a++; }
+            }
+            // remaining ba pair
+            res += Math.min(a, b) * y;
+        }
+        else{
+            int b = 0, a = 0;
+            // try for all ba pair
+            for(int i = 0; i < tmp.length(); i++){
+                if(tmp.charAt(i) == 'a'){
+                    if(b > 0){ b--; res += y; }
+                    else{ a++; }
+                }
+                else{ b++; }
+            }
+            // remaining ab pair
+            res += Math.min(a, b) * x;
+        }
 
-        // First pass: remove high priority pair
-        String stringAfterFirstPass = removeSubstring(s, highPriorityPair);
-        int removedPairsCount =
-            (s.length() - stringAfterFirstPass.length()) / 2;
-
-        // Calculate score from first pass
-        totalScore += removedPairsCount * Math.max(x, y);
-
-        // Second pass: remove low priority pair
-        String stringAfterSecondPass = removeSubstring(
-            stringAfterFirstPass,
-            lowPriorityPair
-        );
-        removedPairsCount = (stringAfterFirstPass.length() -
-            stringAfterSecondPass.length()) /
-        2;
-
-        // Calculate score from second pass
-        totalScore += removedPairsCount * Math.min(x, y);
-
-        return totalScore;
+        return res;
     }
 
-    private String removeSubstring(String input, String targetPair) {
-        Stack<Character> charStack = new Stack<>();
+    // x : ab, y : ba
+    public int maximumGain(String s, int x, int y) {
+        int points = 0;
+        StringBuilder tmp = new StringBuilder();
 
-        // Iterate through each character in the input string
-        for (int i = 0; i < input.length(); i++) {
-            char currentChar = input.charAt(i);
-
-            // Check if current character forms the target pair with the top of the stack
-            if (
-                currentChar == targetPair.charAt(1) &&
-                !charStack.isEmpty() &&
-                charStack.peek() == targetPair.charAt(0)
-            ) {
-                charStack.pop(); // Remove the matching character from the stack
-            } else {
-                charStack.push(currentChar);
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) == 'a' || s.charAt(i) == 'b'){
+                tmp.append(s.charAt(i));
+            }
+            else{
+                // processing group
+                points += calc(tmp.toString(), x, y);
+                // reset tmp to form new
+                tmp.setLength(0);
             }
         }
 
-        // Reconstruct the remaining string after removing target pairs
-        StringBuilder remainingChars = new StringBuilder();
-        while (!charStack.isEmpty()) {
-            remainingChars.append(charStack.pop());
-        }
-        return remainingChars.reverse().toString();
+        if(tmp.length() > 0) points += calc(tmp.toString(), x, y);
+
+        return points;
     }
 }
